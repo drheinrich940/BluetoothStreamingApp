@@ -1,9 +1,5 @@
 package com.example.bluetoothstreaming;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.ActivityCompat;
-
 import android.Manifest;
 import android.app.ProgressDialog;
 import android.os.AsyncTask;
@@ -14,6 +10,10 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
 
 import java.io.BufferedInputStream;
 import java.io.File;
@@ -28,10 +28,7 @@ import java.util.List;
 
 import pub.devrel.easypermissions.EasyPermissions;
 
-/**
- * TODO : Create new activities and design main one
- */
-public class MainActivity extends AppCompatActivity implements EasyPermissions.PermissionCallbacks {
+public class ServerSideActivity extends AppCompatActivity implements EasyPermissions.PermissionCallbacks {
     private static final int WRITE_REQUEST_CODE = 300;
     private static final String TAG = ServerSideActivity.class.getSimpleName();
     private String url;
@@ -71,7 +68,7 @@ public class MainActivity extends AppCompatActivity implements EasyPermissions.P
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        EasyPermissions.onRequestPermissionsResult(requestCode, permissions, grantResults, MainActivity.this);
+        EasyPermissions.onRequestPermissionsResult(requestCode, permissions, grantResults, ServerSideActivity.this);
     }
 
     @Override
@@ -104,7 +101,7 @@ public class MainActivity extends AppCompatActivity implements EasyPermissions.P
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
-            this.progressDialog = new ProgressDialog(MainActivity.this);
+            this.progressDialog = new ProgressDialog(ServerSideActivity.this);
             this.progressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
             this.progressDialog.setCancelable(false);
             this.progressDialog.show();
@@ -199,4 +196,3 @@ public class MainActivity extends AppCompatActivity implements EasyPermissions.P
         }
     }
 }
-

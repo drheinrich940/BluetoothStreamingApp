@@ -30,7 +30,7 @@ import pub.devrel.easypermissions.EasyPermissions;
 
 public class DownloadActivity extends AppCompatActivity implements EasyPermissions.PermissionCallbacks {
     private static final int WRITE_REQUEST_CODE = 300;
-    private static final String TAG = DownloadActivity.class.getSimpleName();
+    private static final String TAG = ServerSideActivity.class.getSimpleName();
     private String url;
     private EditText editTextUrl;
 
@@ -68,7 +68,7 @@ public class DownloadActivity extends AppCompatActivity implements EasyPermissio
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        EasyPermissions.onRequestPermissionsResult(requestCode, permissions, grantResults, DownloadActivity.this);
+        EasyPermissions.onRequestPermissionsResult(requestCode, permissions, grantResults, ServerSideActivity.this);
     }
 
     @Override
@@ -101,7 +101,7 @@ public class DownloadActivity extends AppCompatActivity implements EasyPermissio
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
-            this.progressDialog = new ProgressDialog(DownloadActivity.this);
+            this.progressDialog = new ProgressDialog(ServerSideActivity.this);
             this.progressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
             this.progressDialog.setCancelable(false);
             this.progressDialog.show();
@@ -196,6 +196,3 @@ public class DownloadActivity extends AppCompatActivity implements EasyPermissio
         }
     }
 }
-
-
-
