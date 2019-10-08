@@ -2,6 +2,7 @@ package com.example.bluetoothstreaming;
 
 import android.app.ProgressDialog;
 import android.bluetooth.BluetoothAdapter;
+import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothServerSocket;
 import android.bluetooth.BluetoothSocket;
 import android.content.Context;
@@ -19,6 +20,9 @@ public class BluetoothStreamingService {
     private final BluetoothAdapter bleAdapter;
     Context context;
     private AcceptThread acceptThread_insecure;
+    private ConnectThread connectThread;
+    private BluetoothDevice device;
+    private UUID deviceUUID;
 
 
     public BluetoothStreamingService(Context context) {
@@ -27,6 +31,10 @@ public class BluetoothStreamingService {
         start();
     }
 
+    /**
+     * This thread runs indefinitely, waiting for incoming connections.
+     * When a connection request occurs, it will try to accept it in order to establish it.
+     */
     private class AcceptThread extends Thread {
         private final BluetoothServerSocket serverSocket;
 
@@ -68,4 +76,37 @@ public class BluetoothStreamingService {
     }
 
 
+    /**
+     * This Thread runs when trying to establish a connection between local and distant device.
+     * TODO : logs
+     */
+    private class ConnectThread extends Thread {
+        private BluetoothSocket bleSocket;
+
+        public ConnectThread(BluetoothDevice device, UUID uuid) {
+            device = device;
+            deviceUUID = uuid;
+        }
+
+        public void run(){
+            BluetoothSocket tmp = null;
+            try {
+                tmp = device.createInsecureRfcommSocketToServiceRecord(deviceUUID);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            bleSocket = tmp;
+            bleAdapter.cancelDiscovery();
+            try {
+                bleSocket.connect();
+            } catch (IOException e) {
+                try {
+                    bleSocket.close();
+                } catch (IOException e1) {
+                    e1.printStackTrace();
+                }
+            }
+            connected(bleSocket, device);
+        }
+    }
 }
