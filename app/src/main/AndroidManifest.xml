@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     package="com.example.bluetoothstreaming">
 
     <uses-permission android:name="android.permission.BLUETOOTH" />
@@ -15,7 +16,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".ClientSideActivity"></activity>
+        <activity android:name=".ClientSideActivity" />
         <activity android:name=".ServerSideActivity" />
         <activity android:name=".MainActivity">
             <intent-filter>
@@ -24,7 +25,6 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".ServerSideActivity" />
     </application>
 
 </manifest>

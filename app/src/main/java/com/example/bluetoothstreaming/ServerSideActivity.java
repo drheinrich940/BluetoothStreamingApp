@@ -37,14 +37,14 @@ public class ServerSideActivity extends AppCompatActivity implements EasyPermiss
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_server_side);
 
         /*for change the permission */
         ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE}, 1);
 
         editTextUrl = findViewById(R.id.editTextUrl);
 
-        Button downloadButton = findViewById(R.id.buttonDownload);
+        Button downloadButton = findViewById(R.id.downloadButton);
         downloadButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

@@ -1,5 +1,12 @@
 <resources>
     <string name="app_name">BluetoothStreaming</string>
+
+    <string name="server">Server</string>
     <string name="http">http://</string>
     <string name="download">Download</string>
+    <string name="stream">Stream</string>
+
+
+
+    <string name="client">Client</string>
 </resources>
