@@ -9,6 +9,9 @@ import android.content.Context;
 import android.util.Log;
 
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.nio.charset.Charset;
 import java.util.UUID;
 
 
@@ -18,9 +21,11 @@ public class BluetoothStreamingService {
     private static final UUID UUID_INSECURE = UUID.fromString("");
 
     private final BluetoothAdapter bleAdapter;
+    ProgressDialog progressDialog;
     Context context;
     private AcceptThread acceptThread_insecure;
     private ConnectThread connectThread;
+    private ConnectedThread connectedThread;
     private BluetoothDevice device;
     private UUID deviceUUID;
 
@@ -28,7 +33,36 @@ public class BluetoothStreamingService {
     public BluetoothStreamingService(Context context) {
         this.context = context;
         bleAdapter = BluetoothAdapter.getDefaultAdapter();
-        start();
+        startServer();
+    }
+
+    /**
+     * Starts our streaming service by launching the AcceptThread to wait for incoming connctions.
+     * This method is the 'Server side" service starting method.
+     */
+    public synchronized void startServer(){
+        // First we cancel and free any active connectThread
+        if (connectThread != null) {
+            connectThread.cancel();
+            connectThread = null;
+        }
+        // Then we initialise and start a brand new acceptThread
+        if (acceptThread_insecure == null) {
+            acceptThread_insecure = new AcceptThread();
+            acceptThread_insecure.start();
+        }
+    }
+
+    /**
+     * Starts the client with an attempt to connect with an avaliable server device.
+     * @param bleDevice
+     * @param uuid
+     */
+    public void startClient(BluetoothDevice bleDevice, UUID uuid){
+        progressDialog = ProgressDialog.show(context,"Connecting Bluetooth"
+                ,"You.. Shall.. (not ?) Wait...",true);
+        connectThread = new ConnectThread(device, uuid);
+        connectThread.start();
     }
 
     /**
@@ -108,5 +142,83 @@ public class BluetoothStreamingService {
             }
             connected(bleSocket, device);
         }
+
+        public void cancel() {
+            try {
+                bleSocket.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    /**
+     * ConnectedThread maintains the connection between the devices.
+     * TODO : comments
+     */
+    private class ConnectedThread extends Thread {
+        private final BluetoothSocket bleSocket;
+        private final InputStream inStream;
+        private final OutputStream outStream;
+
+        public ConnectedThread(BluetoothSocket socket){
+            this.bleSocket = socket;
+            InputStream inStream_tmp = null;
+            OutputStream outStream_tmp = null;
+            progressDialog.dismiss();
+            try {
+                inStream_tmp = this.bleSocket.getInputStream();
+                outStream_tmp = this.bleSocket.getOutputStream();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            inStream = inStream_tmp;
+            outStream = outStream_tmp;
+        }
+
+        public void cancel() {
+            try {
+                this.bleSocket.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+
+        public void run(){
+            byte[] buffer = new byte[1024];
+            int bytes;
+            while (true) {
+                try {
+                    bytes = inStream.read(buffer);
+                    /*
+                    Video shit here
+                     */
+                } catch (IOException e) {
+                    break;
+                }
+            }
+        }
+
+        public void write(byte[] bytes) {
+            try {
+                outStream.write(bytes);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    private void connected(BluetoothSocket bleSocket, BluetoothDevice bleDevice) {
+        Log.d(TAG, "connected: Starting.");
+
+        // Start the thread to manage the connection and perform transmissions
+        connectedThread = new ConnectedThread(bleSocket);
+        connectedThread.start();
+    }
+
+    public void write(byte[] out) {
+        ConnectedThread r;
+        Log.d(TAG, "write: Write Called.");
+        connectedThread.write(out);
     }
 }
