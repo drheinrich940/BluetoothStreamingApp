@@ -28,6 +28,9 @@ import java.util.List;
 
 import pub.devrel.easypermissions.EasyPermissions;
 
+/**
+ * TODO : Create new activities and design main one
+ */
 public class MainActivity extends AppCompatActivity implements EasyPermissions.PermissionCallbacks {
     private static final int WRITE_REQUEST_CODE = 300;
     private static final String TAG = DownloadActivity.class.getSimpleName();
