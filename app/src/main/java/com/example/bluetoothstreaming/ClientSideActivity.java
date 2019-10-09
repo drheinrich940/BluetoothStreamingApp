@@ -28,6 +28,7 @@ import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.Set;
+import java.util.UUID;
 
 //TODO : comments
 //TODO : refresh
@@ -69,14 +70,16 @@ public class ClientSideActivity extends AppCompatActivity {
                 Object listItem = listView.getItemAtPosition(position);
                 Log.i("onItemClick", "user selected following item :" + listItem);
                 for (BluetoothDevice i : bleDevices) {
-                    String s = i.toString();
+                    String s = i.getName() +" ; " +i.toString();
                     Log.i("onItemClick", "items :" + s);
-                    if (s == listItem.toString()) {
+                    if (s.equals(listItem.toString())) {
                         Log.i("onItemClick", "match :" + s);
                         ParcelUuid[] uuids = i.getUuids();
                         Log.i("onItemClick", "uuids amount :" + uuids.length);
                         Log.i("onItemClick", "uuid :" + uuids[0]);
-                        bluetoothStreamingService.startClient(i, uuids[0].getUuid());
+                        bluetoothStreamingService.startClient(i, UUID.fromString("8ce255c0-200a-11e0-ac64-0800200c9a66"));
+                        String a = "OKOKOOK";
+                        bluetoothStreamingService.write(a.getBytes());
                     }
                 }
             }

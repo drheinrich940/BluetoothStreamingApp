@@ -185,15 +185,13 @@ public class BluetoothStreamingService {
             }
         }
 
-        public void read(){
+        public void run(){
             byte[] buffer = new byte[1024];
             int bytes;
             while (true) {
                 try {
                     bytes = inStream.read(buffer);
-                    /*
-                    Video shit here
-                     */
+                    Log.d("READ", new String(buffer, 0, bytes ));
                 } catch (IOException e) {
                     break;
                 }
@@ -219,7 +217,7 @@ public class BluetoothStreamingService {
 
     public void write(byte[] out) {
         ConnectedThread r;
-        Log.d(TAG, "write: Write Called.");
+        Log.d(TAG, "write: Write Called." +out);
         connectedThread.send(out);
     }
 }
