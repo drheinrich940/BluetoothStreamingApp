@@ -1,6 +1,8 @@
 package com.example.bluetoothstreaming;
 
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.versionedparcelable.ParcelUtils;
 
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
@@ -8,7 +10,10 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.os.Build;
 import android.os.Bundle;
+import android.os.Parcel;
+import android.os.ParcelUuid;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
@@ -51,6 +56,7 @@ public class ClientSideActivity extends AppCompatActivity {
 
         listView = findViewById(R.id.listView);
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @RequiresApi(api = Build.VERSION_CODES.ICE_CREAM_SANDWICH_MR1)
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 //TODO : rename listItem in item
@@ -61,6 +67,9 @@ public class ClientSideActivity extends AppCompatActivity {
                     Log.i("onItemClick", "items :"+ s);
                     if(s == listItem.toString()){
                         Log.i("onItemClick", "match :"+ s);
+                        ParcelUuid[] uuids = i.getUuids();
+                        Log.i("onItemClick", "uuids amount :"+ uuids.length);
+                        Log.i("onItemClick", "uuid :"+ uuids[0]);
                     }
                 }
             }
