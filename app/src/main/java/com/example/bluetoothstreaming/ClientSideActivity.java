@@ -30,6 +30,7 @@ import java.util.Set;
 public class ClientSideActivity extends AppCompatActivity {
 
     ArrayList<BluetoothDevice> bleDevices = new ArrayList<>();
+    BluetoothStreamingService bluetoothStreamingService;
     BluetoothAdapter bleAdapter;
     ListView listView;
 
@@ -39,8 +40,8 @@ public class ClientSideActivity extends AppCompatActivity {
         setContentView(R.layout.activity_client_side);
         IntentFilter filter = new IntentFilter(BluetoothDevice.ACTION_FOUND);
         bleAdapter = BluetoothAdapter.getDefaultAdapter();
+        bluetoothStreamingService = new BluetoothStreamingService(ClientSideActivity.this);
         Log.i("AAA", "AAAAA");
-
         if (!bleAdapter.isEnabled()) {
             Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
             startActivityForResult(enableBtIntent, 1);
@@ -70,6 +71,7 @@ public class ClientSideActivity extends AppCompatActivity {
                         ParcelUuid[] uuids = i.getUuids();
                         Log.i("onItemClick", "uuids amount :" + uuids.length);
                         Log.i("onItemClick", "uuid :" + uuids[0]);
+                        bluetoothStreamingService.startClient(i, uuids[0].getUuid());
                     }
                 }
             }

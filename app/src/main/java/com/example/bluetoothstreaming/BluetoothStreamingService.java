@@ -18,7 +18,7 @@ import java.util.UUID;
 public class BluetoothStreamingService {
     private static final String TAG = "BleStreamingService";
     private static final String appname = "MyVideoStreamer";
-    private static final UUID UUID_INSECURE = UUID.fromString("");
+    private static final UUID UUID_INSECURE = UUID.fromString("8ce255c0-200a-11e0-ac64-0800200c9a66");
 
     private final BluetoothAdapter bleAdapter;
     ProgressDialog progressDialog;
