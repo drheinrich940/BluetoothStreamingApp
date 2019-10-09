@@ -25,6 +25,22 @@
         tools:ignore="MissingConstraints" />
 
     <Button
+        android:id="@+id/playButton"
+        style="@android:style/Widget.Button"
+        android:layout_width="251dp"
+        android:layout_height="51dp"
+        android:layout_marginStart="32dp"
+        android:layout_marginLeft="32dp"
+        android:layout_marginEnd="32dp"
+        android:layout_marginRight="32dp"
+        android:layout_marginBottom="228dp"
+        android:text="@string/play"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        tools:ignore="MissingConstraints" />
+
+    <Button
         android:id="@+id/clientButton"
         style="@android:style/Widget.Button"
         android:layout_width="251dp"

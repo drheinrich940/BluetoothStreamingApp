@@ -47,6 +47,17 @@ public class MainActivity extends AppCompatActivity {
             }
 
         });
+        /*Desactivate it's juste for test the media player*/
+        Button playButton = findViewById(R.id.playButton);
+        playButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent clientIntent;
+                clientIntent = new Intent(MainActivity.this, PlayVideoActivity.class);
+                startActivity(clientIntent);
+            }
+
+        });
 
 
 

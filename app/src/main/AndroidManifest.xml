@@ -20,6 +20,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+        <activity android:name=".PlayVideoActivity"></activity>
         <activity android:name=".ClientSideActivity" />
         <activity android:name=".ServerSideActivity" />
         <activity android:name=".MainActivity">

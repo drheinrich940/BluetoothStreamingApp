@@ -7,6 +7,10 @@
     <string name="stream">Stream</string>
 
 
-
     <string name="client">Client</string>
+    <string name="play">play</string>
+
+    <string name="title_activity_play_video">PlayVideoActivity</string>
+    <string name="dummy_button">Dummy Button</string>
+    <string name="dummy_content">DUMMY\nCONTENT</string>
 </resources>

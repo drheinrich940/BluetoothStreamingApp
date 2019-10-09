@@ -144,8 +144,7 @@ public class ServerSideActivity extends AppCompatActivity implements EasyPermiss
                 fileName = timestamp + "_" + fileName;
 
                 //External directory path to save file
-                folder = Environment.getExternalStorageDirectory() + "/" + "sharing/";
-                System.out.println(folder);
+                folder = Environment.getExternalStorageDirectory() + "/" + "androiddef/";
 
                 //Create directory folder if it does not exist
                 File directory = new File(folder);
