@@ -2,14 +2,18 @@ package com.example.bluetoothstreaming;
 
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.versionedparcelable.ParcelUtils;
 
+import android.Manifest;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Parcel;
@@ -18,6 +22,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -29,6 +34,11 @@ import java.util.Set;
 //TODO : call stream from server
 public class ClientSideActivity extends AppCompatActivity {
 
+    private Button refreshButton;
+
+    ArrayList<BluetoothDevice> bleDevices_known = new ArrayList<>();
+    ArrayList<BluetoothDevice> bleDevices_new= new ArrayList<>();
+
     ArrayList<BluetoothDevice> bleDevices = new ArrayList<>();
     BluetoothStreamingService bluetoothStreamingService;
     BluetoothAdapter bleAdapter;
@@ -38,22 +48,17 @@ public class ClientSideActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_client_side);
-        IntentFilter filter = new IntentFilter(BluetoothDevice.ACTION_FOUND);
+
+
         bleAdapter = BluetoothAdapter.getDefaultAdapter();
         bluetoothStreamingService = new BluetoothStreamingService(ClientSideActivity.this);
-        Log.i("AAA", "AAAAA");
+
         if (!bleAdapter.isEnabled()) {
-            Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
-            startActivityForResult(enableBtIntent, 1);
+            Intent enableBleIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
+            startActivityForResult(enableBleIntent, 1);
         }
 
-        Set<BluetoothDevice> bondedBleDevicesSet = bleAdapter.getBondedDevices();
-        boolean discovery = bleAdapter.startDiscovery();
-        if (bondedBleDevicesSet.size() > 0) {
-            for (BluetoothDevice device : bondedBleDevicesSet) {
-                bleDevices.add(device);
-            }
-        }
+        this.refreshButton = (Button) findViewById(R.id.refreshDeviceListButton);
 
         listView = findViewById(R.id.listView);
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -75,10 +80,9 @@ public class ClientSideActivity extends AppCompatActivity {
                     }
                 }
             }
-
         });
 
-        rechargeListView();
+        searchAllBleDevices();
     }
 
     private final BroadcastReceiver receiver = new BroadcastReceiver() {
@@ -87,20 +91,75 @@ public class ClientSideActivity extends AppCompatActivity {
             String action = intent.getAction();
             if (BluetoothDevice.ACTION_FOUND.equals(action)) {
                 BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
-                if (!bleDevices.contains(device))
-                    bleDevices.add(device);
+                Log.i("FOUND NEW DEVICE", device.getName());
+                if (!bleDevices_new.contains(device))
+                    bleDevices_new.add(device);
             }
         }
     };
 
-    public void rechargeList(View view) {
+    public void searchAllBleDevices(){
+        IntentFilter ifilter  = new IntentFilter();
+        ifilter.addAction(BluetoothDevice.ACTION_FOUND);
+        ifilter.addAction(BluetoothAdapter.ACTION_DISCOVERY_FINISHED);
+        ClientSideActivity.this.registerReceiver(receiver, ifilter);
+        getKnownDevices();
+        getUnknownDevices();
         rechargeListView();
     }
 
+    public void getKnownDevices(){
+        bleDevices_known.clear();
+        Set<BluetoothDevice> bondedBleDevicesSet = bleAdapter.getBondedDevices();
+        bleDevices_known.addAll(bondedBleDevicesSet);
+    }
+
+    public void getUnknownDevices(){
+        bleDevices_new.clear();
+        if (bleAdapter.isDiscovering()) {
+            bleAdapter.cancelDiscovery();
+        }
+        IntentFilter discoverDevicesIntent = new IntentFilter(BluetoothDevice.ACTION_FOUND);
+        registerReceiver(receiver, discoverDevicesIntent);
+        bleAdapter.startDiscovery();
+    }
+
     public void rechargeListView() {
-        ArrayList deviceList = new ArrayList(bleDevices);
-        ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, deviceList);
-        listView.setAdapter(arrayAdapter);
+        ListView lv = findViewById(R.id.listView);
+        this.bleDevices.clear();
+        this.bleDevices.addAll(this.bleDevices_known);
+        this.bleDevices.addAll(this.bleDevices_new);
+        ArrayList deviceList = new ArrayList();
+        for(BluetoothDevice currentDevice : this.bleDevices){
+            deviceList.add(currentDevice.getName() +" ; " +currentDevice.getAddress());
+        }
+
+        ArrayAdapter<BluetoothDevice> arrayAdapter = new ArrayAdapter<BluetoothDevice>(this, android.R.layout.simple_list_item_1, bleDevices_new);
+        lv.setAdapter(arrayAdapter);
+
+//
+//
+//        ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, deviceList);
+//        listView.setAdapter(arrayAdapter);
+    }
+
+    public void rechargeListView(View view) {
+        ListView lv = findViewById(R.id.listView);
+        this.bleDevices.clear();
+        this.bleDevices.addAll(this.bleDevices_known);
+        this.bleDevices.addAll(this.bleDevices_new);
+        ArrayList deviceList = new ArrayList();
+        for(BluetoothDevice currentDevice : this.bleDevices){
+            deviceList.add(currentDevice.getName() +" ; " +currentDevice.getAddress());
+        }
+
+        ArrayAdapter<BluetoothDevice> arrayAdapter = new ArrayAdapter<BluetoothDevice>(this, android.R.layout.simple_list_item_1, deviceList);
+        lv.setAdapter(arrayAdapter);
+
+//
+//
+//        ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, deviceList);
+//        listView.setAdapter(arrayAdapter);
     }
 
     @Override
