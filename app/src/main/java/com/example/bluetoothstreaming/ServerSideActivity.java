@@ -33,6 +33,7 @@ public class ServerSideActivity extends AppCompatActivity implements EasyPermiss
     private static final int WRITE_REQUEST_CODE = 300;
     private String url;
     private EditText editTextUrl;
+    BluetoothStreamingService bluetoothStreamingService;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,6 +60,15 @@ public class ServerSideActivity extends AppCompatActivity implements EasyPermiss
                     Toast.makeText(getApplicationContext(), "SD Card not found", Toast.LENGTH_LONG).show();
 
                 }
+            }
+
+        });
+
+        Button streamButton = findViewById(R.id.streamButton);
+        streamButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                bluetoothStreamingService = new BluetoothStreamingService(ServerSideActivity.this);
             }
 
         });
