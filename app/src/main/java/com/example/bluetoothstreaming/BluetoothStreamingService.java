@@ -26,7 +26,7 @@ public class BluetoothStreamingService {
     private AcceptThread acceptThread_insecure;
     private ConnectThread connectThread;
     private ConnectedThread connectedThread;
-    private BluetoothDevice device;
+    private BluetoothDevice bleDevice;
     private UUID deviceUUID;
 
 
@@ -59,9 +59,10 @@ public class BluetoothStreamingService {
      * @param uuid
      */
     public void startClient(BluetoothDevice bleDevice, UUID uuid){
+        Log.d(TAG, "Method : startClient() | Trying to connect with device : " + bleDevice.getName() +"; UUID is : " +uuid.toString());
         progressDialog = ProgressDialog.show(context,"Connecting Bluetooth"
                 ,"You.. Shall.. (not ?) Wait...",true);
-        connectThread = new ConnectThread(device, uuid);
+        connectThread = new ConnectThread(bleDevice, uuid);
         connectThread.start();
     }
 
@@ -95,7 +96,7 @@ public class BluetoothStreamingService {
             }
             if (bleSocket != null) {
                 Log.d(TAG, "Method : AcceptThread.run() | Server socket is not null. Will now connect");
-                connected(bleSocket, device);
+                connected(bleSocket, bleDevice);
             }
         }
 
@@ -118,14 +119,14 @@ public class BluetoothStreamingService {
         private BluetoothSocket bleSocket;
 
         public ConnectThread(BluetoothDevice device, UUID uuid) {
-            device = device;
+            bleDevice = device;
             deviceUUID = uuid;
         }
 
         public void run(){
             BluetoothSocket tmp = null;
             try {
-                tmp = device.createInsecureRfcommSocketToServiceRecord(deviceUUID);
+                tmp = bleDevice.createInsecureRfcommSocketToServiceRecord(deviceUUID);
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -140,7 +141,7 @@ public class BluetoothStreamingService {
                     e1.printStackTrace();
                 }
             }
-            connected(bleSocket, device);
+            connected(bleSocket, bleDevice);
         }
 
         public void cancel() {
@@ -184,7 +185,7 @@ public class BluetoothStreamingService {
             }
         }
 
-        public void run(){
+        public void read(){
             byte[] buffer = new byte[1024];
             int bytes;
             while (true) {
@@ -199,7 +200,7 @@ public class BluetoothStreamingService {
             }
         }
 
-        public void write(byte[] bytes) {
+        public void send(byte[] bytes) {
             try {
                 outStream.write(bytes);
             } catch (IOException e) {
@@ -219,6 +220,6 @@ public class BluetoothStreamingService {
     public void write(byte[] out) {
         ConnectedThread r;
         Log.d(TAG, "write: Write Called.");
-        connectedThread.write(out);
+        connectedThread.send(out);
     }
 }

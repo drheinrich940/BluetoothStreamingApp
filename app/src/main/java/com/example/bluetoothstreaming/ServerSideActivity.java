@@ -29,8 +29,8 @@ import java.util.List;
 import pub.devrel.easypermissions.EasyPermissions;
 
 public class ServerSideActivity extends AppCompatActivity implements EasyPermissions.PermissionCallbacks {
+    private static final String TAG = "ServerSideActivity";
     private static final int WRITE_REQUEST_CODE = 300;
-    private static final String TAG = ServerSideActivity.class.getSimpleName();
     private String url;
     private EditText editTextUrl;
 

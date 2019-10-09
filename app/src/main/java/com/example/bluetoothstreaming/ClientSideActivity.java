@@ -61,15 +61,15 @@ public class ClientSideActivity extends AppCompatActivity {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 //TODO : rename listItem in item
                 Object listItem = listView.getItemAtPosition(position);
-                Log.i("onItemClick", "user selected following item :"+ listItem);
-                for(BluetoothDevice i : bleDevices){
+                Log.i("onItemClick", "user selected following item :" + listItem);
+                for (BluetoothDevice i : bleDevices) {
                     String s = i.toString();
-                    Log.i("onItemClick", "items :"+ s);
-                    if(s == listItem.toString()){
-                        Log.i("onItemClick", "match :"+ s);
+                    Log.i("onItemClick", "items :" + s);
+                    if (s == listItem.toString()) {
+                        Log.i("onItemClick", "match :" + s);
                         ParcelUuid[] uuids = i.getUuids();
-                        Log.i("onItemClick", "uuids amount :"+ uuids.length);
-                        Log.i("onItemClick", "uuid :"+ uuids[0]);
+                        Log.i("onItemClick", "uuids amount :" + uuids.length);
+                        Log.i("onItemClick", "uuid :" + uuids[0]);
                     }
                 }
             }
@@ -106,5 +106,4 @@ public class ClientSideActivity extends AppCompatActivity {
         super.onDestroy();
         unregisterReceiver(receiver);
     }
-
 }
