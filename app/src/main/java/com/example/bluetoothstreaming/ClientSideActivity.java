@@ -53,8 +53,16 @@ public class ClientSideActivity extends AppCompatActivity {
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                //TODO : rename listItem in item
                 Object listItem = listView.getItemAtPosition(position);
                 Log.i("onItemClick", "user selected following item :"+ listItem);
+                for(BluetoothDevice i : bleDevices){
+                    String s = i.toString();
+                    Log.i("onItemClick", "items :"+ s);
+                    if(s == listItem.toString()){
+                        Log.i("onItemClick", "match :"+ s);
+                    }
+                }
             }
 
         });
