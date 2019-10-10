@@ -1,4 +1,4 @@
-package com.example.bluetoothstreaming;
+package com.example.bluetoothstreaming.Utils;
 
 import android.os.Environment;
 

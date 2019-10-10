@@ -12,7 +12,6 @@
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.INTERNET" />
 
-
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -20,10 +19,21 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".PlayVideoActivity"></activity>
-        <activity android:name=".ClientSideActivity" />
-        <activity android:name=".ServerSideActivity" />
-        <activity android:name=".MainActivity">
+        <activity android:name=".Activities.BondingActivity"></activity>
+
+        <service
+            android:name=".Services.ClientService"
+            android:enabled="true"
+            android:exported="true" />
+        <service
+            android:name=".Services.ServerService"
+            android:enabled="true"
+            android:exported="true" />
+
+        <activity android:name=".Activities.PlayVideoActivity" />
+        <activity android:name=".Activities.ClientSideActivity" />
+        <activity android:name=".Activities.ServerSideActivity" />
+        <activity android:name=".Activities.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

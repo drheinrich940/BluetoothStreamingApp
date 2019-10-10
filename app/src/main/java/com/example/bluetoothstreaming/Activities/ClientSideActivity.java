@@ -1,22 +1,16 @@
-package com.example.bluetoothstreaming;
+package com.example.bluetoothstreaming.Activities;
 
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
-import androidx.versionedparcelable.ParcelUtils;
 
-import android.Manifest;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Parcel;
 import android.os.ParcelUuid;
 import android.util.Log;
 import android.view.View;
@@ -24,7 +18,9 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
-import android.widget.Toast;
+
+import com.example.bluetoothstreaming.R;
+import com.example.bluetoothstreaming.Threading.BluetoothStreamingThreads;
 
 import java.util.ArrayList;
 import java.util.Set;
@@ -33,6 +29,10 @@ import java.util.UUID;
 //TODO : comments
 //TODO : refresh
 //TODO : call stream from server
+
+/**
+ * Clients main activity. Allows the user to subscribe to a given server feed via bluetooth interface
+ */
 public class ClientSideActivity extends AppCompatActivity {
 
     private Button refreshButton;
@@ -41,7 +41,7 @@ public class ClientSideActivity extends AppCompatActivity {
     ArrayList<BluetoothDevice> bleDevices_new= new ArrayList<>();
 
     ArrayList<BluetoothDevice> bleDevices = new ArrayList<>();
-    BluetoothStreamingService bluetoothStreamingService;
+    BluetoothStreamingThreads bluetoothStreamingThreads;
     BluetoothAdapter bleAdapter;
     ListView listView;
 
@@ -52,7 +52,7 @@ public class ClientSideActivity extends AppCompatActivity {
 
 
         bleAdapter = BluetoothAdapter.getDefaultAdapter();
-        bluetoothStreamingService = new BluetoothStreamingService(ClientSideActivity.this);
+        bluetoothStreamingThreads = new BluetoothStreamingThreads(ClientSideActivity.this);
 
         if (!bleAdapter.isEnabled()) {
             Intent enableBleIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
@@ -77,17 +77,32 @@ public class ClientSideActivity extends AppCompatActivity {
                         ParcelUuid[] uuids = i.getUuids();
                         Log.i("onItemClick", "uuids amount :" + uuids.length);
                         Log.i("onItemClick", "uuid :" + uuids[0]);
-                        bluetoothStreamingService.startClient(i, UUID.fromString("8ce255c0-200a-11e0-ac64-0800200c9a66"));
+                        //bluetoothStreamingThreads.startClient(i, UUID.fromString("8ce255c0-200a-11e0-ac64-0800200c9a66"));
                         String a = "OKOKOOK";
-                        bluetoothStreamingService.write(a.getBytes());
+                        //bluetoothStreamingThreads.write(a.getBytes());
+                        goToClientServerPairingActivity(i);
                     }
                 }
+
             }
         });
 
         searchAllBleDevices();
     }
 
+    /**
+     * Will perform pairing between current and selected device from the client activity view
+     * @param bluetoothDevice
+     */
+    public void goToClientServerPairingActivity(BluetoothDevice bluetoothDevice) {
+        Intent intent = new Intent(this, BondingActivity.class);
+        intent.putExtra("BLUETOOTH_SELECTED_DEVICE",bluetoothDevice);
+        startActivity(intent);
+    }
+
+    /**
+     * To retrieve unknown avaliable bluetooth devices
+     */
     private final BroadcastReceiver receiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
@@ -101,6 +116,9 @@ public class ClientSideActivity extends AppCompatActivity {
         }
     };
 
+    /**
+     * Performs general search
+     */
     public void searchAllBleDevices(){
         IntentFilter ifilter  = new IntentFilter();
         ifilter.addAction(BluetoothDevice.ACTION_FOUND);
@@ -111,12 +129,18 @@ public class ClientSideActivity extends AppCompatActivity {
         rechargeListView();
     }
 
+    /**
+     * Gets all the paired/known devices
+     */
     public void getKnownDevices(){
         bleDevices_known.clear();
         Set<BluetoothDevice> bondedBleDevicesSet = bleAdapter.getBondedDevices();
         bleDevices_known.addAll(bondedBleDevicesSet);
     }
 
+    /**
+     * Gets all the unknown avaliable devices
+     */
     public void getUnknownDevices(){
         bleDevices_new.clear();
         if (bleAdapter.isDiscovering()) {
@@ -127,6 +151,9 @@ public class ClientSideActivity extends AppCompatActivity {
         bleAdapter.startDiscovery();
     }
 
+    /**
+     * Reloads the list object with refreshed data
+     */
     public void rechargeListView() {
         ListView lv = findViewById(R.id.listView);
         this.bleDevices.clear();
@@ -146,6 +173,10 @@ public class ClientSideActivity extends AppCompatActivity {
 //        listView.setAdapter(arrayAdapter);
     }
 
+    /**
+     * Reload the view to display refreshed data
+     * @param view
+     */
     public void rechargeListView(View view) {
         ListView lv = findViewById(R.id.listView);
         this.bleDevices.clear();

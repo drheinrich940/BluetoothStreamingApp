@@ -1,4 +1,4 @@
-package com.example.bluetoothstreaming;
+package com.example.bluetoothstreaming.Threading;
 
 import android.app.ProgressDialog;
 import android.bluetooth.BluetoothAdapter;
@@ -14,8 +14,11 @@ import java.io.OutputStream;
 import java.nio.charset.Charset;
 import java.util.UUID;
 
-
-public class BluetoothStreamingService {
+/**
+ * Connects and stream a file wia bluetooth
+ * Issues with the socket connection
+ */
+public class BluetoothStreamingThreads {
     private static final String TAG = "BleStreamingService";
     private static final String appname = "MyVideoStreamer";
     private static final UUID UUID_INSECURE = UUID.fromString("8ce255c0-200a-11e0-ac64-0800200c9a66");
@@ -30,7 +33,7 @@ public class BluetoothStreamingService {
     private UUID deviceUUID;
 
 
-    public BluetoothStreamingService(Context context) {
+    public BluetoothStreamingThreads(Context context) {
         this.context = context;
         bleAdapter = BluetoothAdapter.getDefaultAdapter();
         startServer();
